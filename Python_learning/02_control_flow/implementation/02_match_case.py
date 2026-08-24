@@ -123,9 +123,6 @@ pipeline = {
 }
 
 
-
-
-
 match pipeline:
     case {"status": "SUCCESS"}:
         print("Pipeline completed")

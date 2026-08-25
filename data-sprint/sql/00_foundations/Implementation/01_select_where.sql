@@ -301,3 +301,187 @@ WHERE order_status = 'COMPLETED'
   AND order_amount > 20000
 ORDER BY order_date DESC
 LIMIT 5;
+
+-- ============================================================
+-- 11. NOT
+-- ============================================================
+
+-- NOT reverses a condition.
+-- Find customers who are NOT from Mumbai.
+
+SELECT
+    customer_id,
+    customer_name,
+    city
+FROM public.customers
+WHERE NOT city = 'Mumbai';
+
+
+-- Equivalent using <>.
+
+SELECT
+    customer_id,
+    customer_name,
+    city
+FROM public.customers
+WHERE city <> 'Mumbai';
+
+
+-- Customers who are NOT from Mumbai or Pune.
+
+SELECT
+    customer_id,
+    customer_name,
+    city
+FROM public.customers
+WHERE NOT city IN ('Mumbai', 'Pune');
+
+
+-- Equivalent form.
+
+SELECT
+    customer_id,
+    customer_name,
+    city
+FROM public.customers
+WHERE city NOT IN ('Mumbai', 'Pune');
+
+
+-- Products that are NOT in the Electronics category.
+
+SELECT
+    product_id,
+    product_name,
+    category,
+    price
+FROM public.products
+WHERE NOT category = 'Electronics';
+
+
+-- ============================================================
+-- 12. LIKE
+-- ============================================================
+
+-- LIKE is used for pattern-based string matching.
+
+
+-- ------------------------------------------------------------
+-- Starts with
+-- ------------------------------------------------------------
+
+-- Customers whose names start with 'A'.
+
+SELECT
+    customer_id,
+    customer_name,
+    city
+FROM public.customers
+WHERE customer_name LIKE 'A%';
+
+
+-- ------------------------------------------------------------
+-- Ends with
+-- ------------------------------------------------------------
+
+-- Customers whose names end with 'a'.
+
+SELECT
+    customer_id,
+    customer_name,
+    city
+FROM public.customers
+WHERE customer_name LIKE '%a';
+
+
+-- ------------------------------------------------------------
+-- Contains
+-- ------------------------------------------------------------
+
+-- Customers whose names contain 'an'.
+
+SELECT
+    customer_id,
+    customer_name,
+    city
+FROM public.customers
+WHERE customer_name LIKE '%an%';
+
+
+-- ------------------------------------------------------------
+-- Exactly one character
+-- ------------------------------------------------------------
+
+-- Customer names with exactly 5 characters.
+
+SELECT
+    customer_id,
+    customer_name
+FROM public.customers
+WHERE customer_name LIKE '_____';
+
+
+-- ------------------------------------------------------------
+-- Starts and ends with a pattern
+-- ------------------------------------------------------------
+
+-- Customers whose names start with 'A'
+-- and end with 'a'.
+
+SELECT
+    customer_id,
+    customer_name
+FROM public.customers
+WHERE customer_name LIKE 'A%a';
+
+
+-- ------------------------------------------------------------
+-- NOT LIKE
+-- ------------------------------------------------------------
+
+-- Customers whose names do NOT start with 'A'.
+
+SELECT
+    customer_id,
+    customer_name,
+    city
+FROM public.customers
+WHERE customer_name NOT LIKE 'A%';
+
+
+-- ============================================================
+-- 6. NOT + LIKE
+-- ============================================================
+
+-- Products whose names do NOT contain 'Phone'.
+
+SELECT
+    product_id,
+    product_name,
+    category,
+    price
+FROM public.products
+WHERE product_name NOT LIKE '%Phone%';
+
+
+-- ============================================================
+-- 7. PRODUCTION-STYLE FILTERING
+-- ============================================================
+
+-- Find completed orders above 20,000
+-- where the customer's city is NOT Mumbai
+-- and the customer name starts with 'A'.
+
+SELECT
+    o.order_id,
+    o.customer_id,
+    o.order_date,
+    o.order_amount
+FROM public.orders AS o
+JOIN public.customers AS c
+    ON o.customer_id = c.customer_id
+WHERE o.order_status = 'COMPLETED'
+  AND o.order_amount > 20000
+  AND c.city NOT IN ('Mumbai')
+  AND c.customer_name LIKE 'A%'
+ORDER BY o.order_date DESC
+LIMIT 5;

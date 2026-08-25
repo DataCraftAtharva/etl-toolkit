@@ -191,12 +191,12 @@ event = {
 }
 
 match event:
-    case {"type": "PIPELINE_STARTED", "pipeline": name}:
-        print(f"Start monitoring {name}")
-    case {"type": "PIPELINE_COMPLETED", "pipeline": name}:
-        print(f"Generate completion report for {name}")
-    case {"type": "PIPELINE_FAILED", "pipeline": name}:
-        print(f"Send failure alert for {name}")
+    case {"type":"PIPELINE_STARTED","pipeline":pipeline_name}:
+        print(f"Start monitoring {pipeline_name} ")
+    case {"type":"PIPELINE_COMPLETED","pipeline":pipeline_name}:
+        print(f"Generate Completion Report for {pipeline_name}")
+    case {"type":"PIPELINE_FAILED","pipeline":pipeline_name}:
+        print(f"Generate Alert for {pipeline_name}")
     case _:
         print("Ignore unknown event")
 

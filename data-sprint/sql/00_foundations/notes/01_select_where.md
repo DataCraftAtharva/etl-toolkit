@@ -950,4 +950,639 @@ HAVING
 Aggregate analysis
 ```
 
+# Additional SQL Filtering Notes
+
+## `NOT`, `LIKE`, `NOT LIKE`, and Filtering Mental Model
+
+---
+
+# 1. `NOT`
+
+`NOT` reverses the result of a condition.
+
+For example:
+
+```sql
+SELECT
+    customer_id,
+    customer_name,
+    city
+FROM customers
+WHERE NOT city = 'Mumbai';
+```
+
+This means:
+
+> Keep customers whose city is not Mumbai.
+
+---
+
+## `NOT` with `IN`
+
+You can use `NOT` with `IN`.
+
+```sql
+WHERE NOT city IN ('Mumbai', 'Pune');
+```
+
+This means:
+
+> Keep customers whose city is neither Mumbai nor Pune.
+
+A more common and readable form is:
+
+```sql
+WHERE city NOT IN ('Mumbai', 'Pune');
+```
+
+Therefore:
+
+```sql
+NOT city IN (...)
+```
+
+and:
+
+```sql
+city NOT IN (...)
+```
+
+express the same filtering idea.
+
+---
+
+## `NOT` with `LIKE`
+
+`NOT` can also be used with pattern matching.
+
+For example:
+
+```sql
+WHERE customer_name NOT LIKE 'A%';
+```
+
+This means:
+
+> Keep customers whose names do not start with `A`.
+
+---
+
+## `NOT` vs `<>` vs `NOT IN`
+
+These are related, but they should not be treated as identical in every situation.
+
+### Single value
+
+```sql
+WHERE city <> 'Mumbai';
+```
+
+or:
+
+```sql
+WHERE NOT city = 'Mumbai';
+```
+
+Both express:
+
+> City is not Mumbai.
+
+### Multiple values
+
+```sql
+WHERE city NOT IN ('Mumbai', 'Pune');
+```
+
+This means:
+
+> City is neither Mumbai nor Pune.
+
+### Pattern
+
+```sql
+WHERE customer_name NOT LIKE 'A%';
+```
+
+This means:
+
+> Customer name does not match the pattern `A%`.
+
+### Mental model
+
+```text
+NOT
+ │
+ ├── NOT condition
+ │
+ ├── NOT IN
+ │
+ └── NOT LIKE
+```
+
+`NOT` is the general logical operator.
+
+`NOT IN` and `NOT LIKE` are specialized SQL filtering forms.
+
+---
+
+# 2. `LIKE`
+
+`LIKE` is used for **pattern-based string matching**.
+
+It is useful when you don't know the exact value you are looking for.
+
+For example, instead of:
+
+```sql
+WHERE customer_name = 'Atharva';
+```
+
+you can search for a pattern:
+
+```sql
+WHERE customer_name LIKE 'Ath%';
+```
+
+This can match names beginning with `Ath`.
+
+---
+
+# LIKE Wildcards
+
+The two important wildcards for Day 1 are:
+
+| Wildcard | Meaning |
+|---|---|
+| `%` | Zero or more characters |
+| `_` | Exactly one character |
+
+---
+
+## `%` — Zero or More Characters
+
+The `%` wildcard represents zero or more characters.
+
+---
+
+### Starts with
+
+```sql
+WHERE customer_name LIKE 'A%';
+```
+
+Meaning:
+
+> Starts with `A`.
+
+Possible matches:
+
+```text
+Amit
+Anjali
+Atharva
+Arjun
+```
+
+Mental model:
+
+```text
+A + anything
+```
+
+```text
+A%
+```
+
+---
+
+### Ends with
+
+```sql
+WHERE customer_name LIKE '%a';
+```
+
+Meaning:
+
+> Ends with `a`.
+
+Mental model:
+
+```text
+anything + a
+```
+
+```text
+%a
+```
+
+---
+
+### Contains
+
+```sql
+WHERE customer_name LIKE '%an%';
+```
+
+Meaning:
+
+> Contains `an` anywhere in the string.
+
+Mental model:
+
+```text
+anything + an + anything
+```
+
+```text
+%an%
+```
+
+---
+
+# `_` — Exactly One Character
+
+The underscore `_` matches exactly one character.
+
+Example:
+
+```sql
+WHERE customer_name LIKE 'A____';
+```
+
+This means:
+
+```text
+A + exactly 4 characters
+```
+
+Therefore, the total length is **5 characters**.
+
+Mental model:
+
+```text
+A _ _ _ _
+```
+
+Each `_` represents exactly one character.
+
+---
+
+# Multiple Underscores
+
+For example:
+
+```sql
+WHERE customer_name LIKE '_____';
+```
+
+means:
+
+```text
+Exactly 5 characters
+```
+
+because there are five `_` characters.
+
+---
+
+# Combining `%` and `_`
+
+You can combine the wildcards.
+
+Example:
+
+```sql
+WHERE customer_name LIKE 'A___%';
+```
+
+Meaning:
+
+```text
+Starts with A
++
+at least 3 additional characters
++
+anything after that
+```
+
+You don't need to memorize complicated patterns at this stage.
+
+The important thing is understanding:
+
+```text
+% → zero or more characters
+_ → exactly one character
+```
+
+---
+
+# `NOT LIKE`
+
+`NOT LIKE` finds values that do not match a pattern.
+
+Example:
+
+```sql
+SELECT
+    customer_id,
+    customer_name
+FROM customers
+WHERE customer_name NOT LIKE 'A%';
+```
+
+Meaning:
+
+> Customers whose names do not start with `A`.
+
+Another example:
+
+```sql
+SELECT
+    product_id,
+    product_name
+FROM products
+WHERE product_name NOT LIKE '%Phone%';
+```
+
+Meaning:
+
+> Products whose names do not contain `Phone`.
+
+---
+
+# 3. Filtering Mental Model
+
+Think about SQL filtering like this:
+
+```text
+                    TABLE
+                      │
+                      ↓
+                   WHERE
+                      │
+          ┌───────────┼───────────┐
+          ↓           ↓           ↓
+      Exact value    Range      Pattern
+          │           │           │
+          ↓           ↓           ↓
+          =         BETWEEN      LIKE
+          <>        > <          NOT LIKE
+          IN        >= <=
+          NOT IN
+                      │
+                      ↓
+                 Filtered Rows
+```
+
+The main question is:
+
+> **What kind of condition am I trying to express?**
+
+---
+
+## Exact values
+
+Use `=` when matching one specific value.
+
+```sql
+WHERE city = 'Mumbai';
+```
+
+Meaning:
+
+> Keep rows where the city is exactly Mumbai.
+
+---
+
+## Multiple values
+
+Use `IN` when matching one of several specific values.
+
+```sql
+WHERE city IN ('Mumbai', 'Pune');
+```
+
+Meaning:
+
+> Keep rows where the city is either Mumbai or Pune.
+
+---
+
+## Excluding values
+
+Use `NOT IN` when excluding multiple specific values.
+
+```sql
+WHERE city NOT IN ('Mumbai', 'Pune');
+```
+
+Meaning:
+
+> Keep rows where the city is neither Mumbai nor Pune.
+
+---
+
+## Numeric range
+
+Use `BETWEEN` when filtering within a range.
+
+```sql
+WHERE price BETWEEN 5000 AND 30000;
+```
+
+Meaning:
+
+> Keep rows where the price is between 5,000 and 30,000.
+
+---
+
+## String pattern
+
+Use `LIKE` when the requirement is based on a string pattern.
+
+```sql
+WHERE customer_name LIKE 'A%';
+```
+
+Meaning:
+
+> Keep customers whose names start with `A`.
+
+---
+
+## Missing value
+
+Use `IS NULL` when checking for a missing value.
+
+```sql
+WHERE delivered_at IS NULL;
+```
+
+Meaning:
+
+> Keep rows where `delivered_at` has no value.
+
+To find rows where the value exists:
+
+```sql
+WHERE delivered_at IS NOT NULL;
+```
+
+---
+
+# 4. Quick Filtering Decision Guide
+
+| Requirement | SQL Pattern |
+|---|---|
+| Exactly one value | `=` |
+| Not equal to one value | `<>` |
+| One of several values | `IN (...)` |
+| None of several values | `NOT IN (...)` |
+| Greater than | `>` |
+| Less than | `<` |
+| Greater than or equal | `>=` |
+| Less than or equal | `<=` |
+| Within a range | `BETWEEN ... AND ...` |
+| Starts with | `LIKE 'A%'` |
+| Ends with | `LIKE '%a'` |
+| Contains | `LIKE '%an%'` |
+| Does not match pattern | `NOT LIKE 'A%'` |
+| Missing value | `IS NULL` |
+| Value exists | `IS NOT NULL` |
+
+---
+
+# 5. Core Mental Model
+
+When reading an SQL interview question, identify the type of filtering requirement first.
+
+```text
+                Filtering Requirement
+                         │
+        ┌────────────────┼────────────────┐
+        ↓                ↓                ↓
+   Exact value         Range           Pattern
+        │                │                │
+        ↓                ↓                ↓
+    = / <>          > < >= <=          LIKE
+    IN / NOT IN     BETWEEN            NOT LIKE
+        │
+        ↓
+   Missing value
+        │
+        ↓
+ IS NULL / IS NOT NULL
+```
+
+The goal is not to memorize queries.
+
+The goal is to recognize:
+
+```text
+"What type of filter does the business requirement need?"
+```
+
+Then choose the appropriate SQL operator.
+
+---
+
+# 6. Day 1 — What You Should Know
+
+For Day 1, focus primarily on these patterns:
+
+```text
+= 
+<>
+IN (...)
+NOT IN (...)
+BETWEEN ... AND ...
+LIKE '...'
+NOT LIKE '...'
+IS NULL
+IS NOT NULL
+```
+
+The most important pattern recognition is:
+
+```text
+Exact value
+    ↓
+=
+
+Multiple allowed values
+    ↓
+IN (...)
+
+Multiple excluded values
+    ↓
+NOT IN (...)
+
+Range
+    ↓
+BETWEEN / comparison operators
+
+String pattern
+    ↓
+LIKE
+
+Exclude string pattern
+    ↓
+NOT LIKE
+
+Missing value
+    ↓
+IS NULL
+
+Existing value
+    ↓
+IS NOT NULL
+```
+
+---
+
+# Key Takeaway
+
+SQL filtering becomes much easier when you stop thinking:
+
+> "Which SQL syntax do I need to memorize?"
+
+and start thinking:
+
+> "What type of condition am I trying to express?"
+
+```text
+Exact?
+    → =
+
+Not equal?
+    → <>
+
+One of these?
+    → IN
+
+None of these?
+    → NOT IN
+
+Range?
+    → BETWEEN / > / < / >= / <=
+
+Starts with?
+    → LIKE 'A%'
+
+Ends with?
+    → LIKE '%a'
+
+Contains?
+    → LIKE '%abc%'
+
+Does not match?
+    → NOT LIKE
+
+Missing?
+    → IS NULL
+
+Not missing?
+    → IS NOT NULL
+```
+
 **Next topic: Aggregation — `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`, and `GROUP BY`.**

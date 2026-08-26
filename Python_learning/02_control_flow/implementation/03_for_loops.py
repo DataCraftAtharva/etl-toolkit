@@ -1,16 +1,17 @@
 # =========================================================
-# 03_for_loops.py
+# 02_for_loops.py
 # Purpose:
-# Learn how Python for loops iterate over different data
-# structures and how they are used in data processing.
+# Learn Python for loops, iteration, enumerate(), zip(),
+# unpacking, nested loops, and common loop patterns.
 # =========================================================
+
 
 # =========================================================
 # CASE 1
-# Basic iteration over a list
+# Basic list iteration
 # =========================================================
 
-print("CASE 1 -> Iterating over a list")
+print("CASE 1 -> Basic list iteration")
 
 assets = [
     "server-101",
@@ -19,7 +20,8 @@ assets = [
 ]
 
 for asset in assets:
-    print("Processing", asset)
+    print(asset)
+
 
 # =========================================================
 # CASE 2
@@ -30,9 +32,9 @@ print("\nCASE 2 -> Iterating over a string")
 
 pipeline_name = "ETL"
 
-
 for character in pipeline_name:
     print(character)
+
 
 # =========================================================
 # CASE 3
@@ -49,28 +51,43 @@ pipeline = (
 for value in pipeline:
     print(value)
 
+
 # =========================================================
 # CASE 4
 # Iterating over a dictionary
+# Keys, values, and key-value pairs
 # =========================================================
 
-print("\nCASE 4 -> Iterating over a dictionary")
+print("\nCASE 4 -> Dictionary iteration")
 
 pipeline = {
     "name": "daily_sales_etl",
     "status": "SUCCESS",
-    "retry_count": 2
+    "retry_count": 0
 }
 
+print("\nDictionary keys:")
+
+for key in pipeline:
+    print(key)
+
+print("\nDictionary values:")
+
+for value in pipeline.values():
+    print(value)
+
+print("\nDictionary key-value pairs:")
+
 for key, value in pipeline.items():
-    print(key, "->", value)
+    print(key, value)
+
 
 # =========================================================
 # CASE 5
 # Iterating over a set
 # =========================================================
 
-print("\nCASE 5 -> Iterating over a set")
+print("\nCASE 5 -> Set iteration")
 
 unique_assets = {
     "server-101",
@@ -81,42 +98,42 @@ unique_assets = {
 for asset in unique_assets:
     print(asset)
 
+
 # =========================================================
 # CASE 6
-# Using range()
+# range()
 # =========================================================
 
 print("\nCASE 6 -> range()")
 
-for attempt in range(3):
-    print("Retry attempt", attempt)
+for number in range(5):
+    print(number)
+
+
+print("\nrange(start, stop):")
+
+for day in range(1, 6):
+    print(day)
+
+
+print("\nrange(start, stop, step):")
+
+for offset in range(0, 10, 2):
+    print(offset)
+
+
+print("\nrange() with negative step:")
+
+for number in range(5, 0, -1):
+    print(number)
+
 
 # =========================================================
 # CASE 7
-# range(start, stop)
-# =========================================================
-
-print("\nCASE 7 -> range(start, stop)")
-
-for day in range(1, 6):
-    print("Day", day)
-
-# =========================================================
-# CASE 8
-# range(start, stop, step)
-# =========================================================
-
-print("\nCASE 8 -> range(start, stop, step)")
-
-for batch in range(0, 10, 2):
-    print("Batch offset", batch)
-
-# =========================================================
-# CASE 9
 # enumerate()
 # =========================================================
 
-print("\nCASE 9 -> enumerate()")
+print("\nCASE 7 -> enumerate()")
 
 assets = [
     "server-101",
@@ -127,109 +144,455 @@ assets = [
 for index, asset in enumerate(assets):
     print(index, asset)
 
-# =========================================================
-# CASE 10
-# enumerate(start=1)
-# =========================================================
 
-print("\nCASE 10 -> enumerate(start=1)")
+print("\nenumerate() with start=1:")
 
 for index, asset in enumerate(assets, start=1):
     print(index, asset)
 
+
 # =========================================================
-# CASE 11
-# Iterating over a list of dictionaries
-# This is one of the most important ETL patterns.
+# CASE 8
+# Unpacking
 # =========================================================
 
-print("\nCASE 11 -> List of dictionaries")
+print("\nCASE 8 -> Unpacking")
 
 records = [
-    {"asset_id": "server-101", "status": "ACTIVE"},
-    {"asset_id": "server-102", "status": "FAILED"},
-    {"asset_id": "server-103", "status": "ACTIVE"}
+    ("server-101", "ACTIVE"),
+    ("server-102", "FAILED"),
+    ("server-103", "ACTIVE")
+]
+
+for asset_id, status in records:
+    print(asset_id, status)
+
+
+# =========================================================
+# CASE 9
+# Lists of dictionaries
+# =========================================================
+
+print("\nCASE 9 -> Lists of dictionaries")
+
+records = [
+    {
+        "asset_id": "server-101",
+        "status": "ACTIVE"
+    },
+    {
+        "asset_id": "server-102",
+        "status": "FAILED"
+    },
+    {
+        "asset_id": "server-103",
+        "status": "ACTIVE"
+    }
 ]
 
 for record in records:
-    print(record["asset_id"], record["status"])
+    print(
+        record["asset_id"],
+        record["status"]
+    )
+
+
+# =========================================================
+# CASE 10
+# zip()
+# =========================================================
+
+print("\nCASE 10 -> zip()")
+
+asset_ids = [
+    "server-101",
+    "server-102",
+    "server-103"
+]
+
+statuses = [
+    "ACTIVE",
+    "FAILED",
+    "ACTIVE"
+]
+
+for asset_id, status in zip(asset_ids, statuses):
+    print(asset_id, status)
+
+
+# =========================================================
+# CASE 11
+# zip() with multiple iterables
+# =========================================================
+
+print("\nCASE 11 -> zip() with multiple iterables")
+
+asset_ids = [
+    "101",
+    "102",
+    "103"
+]
+
+statuses = [
+    "ACTIVE",
+    "FAILED",
+    "ACTIVE"
+]
+
+regions = [
+    "Mumbai",
+    "Pune",
+    "Delhi"
+]
+
+for asset_id, status, region in zip(
+    asset_ids,
+    statuses,
+    regions
+):
+    print(asset_id, status, region)
+
 
 # =========================================================
 # CASE 12
-# Conditional processing inside a loop
+# Conditional processing
+# Filtering active assets
 # =========================================================
 
 print("\nCASE 12 -> Conditional processing")
 
 for record in records:
+
     if record["status"] == "ACTIVE":
-        print("Processing", record["asset_id"])
+        print(record["asset_id"])
+
 
 # =========================================================
 # CASE 13
-# Accumulating results
+# Loop pattern -> Counting
 # =========================================================
 
-print("\nCASE 13 -> Accumulating results")
+print("\nCASE 13 -> Counting")
 
-active_assets = []
+statuses = [
+    "SUCCESS",
+    "FAILED",
+    "SUCCESS",
+    "SUCCESS"
+]
 
-for record in records:
-    if record["status"] == "ACTIVE":
-        active_assets.append(record["asset_id"])
 
-print("Active assets:", active_assets)
+success_count = 0
+
+for status in statuses:
+    if status == "SUCCESS":
+        success_count+=1
+
+print("Success Count",success_count)
+
+
+
+
+
 
 # =========================================================
 # CASE 14
-# Nested loops
+# Loop pattern -> Summation
 # =========================================================
 
-print("\nCASE 14 -> Nested loops")
+print("\nCASE 14 -> Summation")
 
-regions = ["Mumbai", "Pune"]
-technologies = ["Linux", "Windows"]
+order_amounts = [
+    1000,
+    2500,
+    5000
+]
+total_amount = 0
 
-for region in regions:
-    for technology in technologies:
-        print(region, technology)
+for amount in order_amounts:
+    total_amount+=amount
+
+print("Total Amount",total_amount)
+
+
+
+
 
 # =========================================================
 # CASE 15
-# Practical production example
-# Processing pipeline events
+# Loop pattern -> Searching
 # =========================================================
 
-print("\nCASE 15 -> Production event processing")
+print("\nCASE 15 -> Searching")
+
+assets = [
+    "server-101",
+    "server-102",
+    "server-103",
+    "server-103"
+]
+
+
+target_asset = "server-103"
+
+found = False
+
+for asset in assets:
+    if asset == target_asset:
+        found = True
+        break
+
+
+print("Asset found:",found)
+
+
+
+
+# =========================================================
+# CASE 16
+# Loop pattern -> Filtering
+# =========================================================
+
+print("\nCASE 16 -> Filtering")
+
+records = [
+    {
+        "asset_id": "server-101",
+        "status": "ACTIVE"
+    },
+    {
+        "asset_id": "server-102",
+        "status": "FAILED"
+    },
+    {
+        "asset_id": "server-103",
+        "status": "ACTIVE"
+    }
+]
+
+active_assets = []
+
+
+for record in records:
+    if record["status"] =="ACTIVE":
+        active_assets.append(record["asset_id"])
+
+
+print("Active Assets",active_assets)
+
+
+
+# =========================================================
+# CASE 17
+# Loop pattern -> Building result lists
+# =========================================================
+
+print("\nCASE 17 -> Building result lists")
+
+prices = [
+    100,
+    200,
+    300
+]
+
+discounted_prices = []
+
+for price in prices:
+    discounted_prices.append(price * 0.9)
+
+print("Discounted prices:", discounted_prices)
+
+
+# =========================================================
+# CASE 18
+# Nested loops
+# =========================================================
+
+print("\nCASE 18 -> Nested loops")
+
+regions = [
+    "Mumbai",
+    "Pune"
+]
+
+technologies = [
+    "Linux",
+    "Windows"
+]
+
+
+for region in regions:
+    for technology in technologies:
+        print(region,technology)
+
+
+
+
+# =========================================================
+# CASE 19
+# Nested loops with data
+# =========================================================
+
+print("\nCASE 19 -> Nested loops with data")
+
+customers = [
+    "customer-101",
+    "customer-102"
+]
+
+orders = [
+    "order-1001",
+    "order-1002",
+    "order-1003"
+]
+
+for customer in customers:
+
+    for order in orders:
+        print(customer, order)
+
+
+# =========================================================
+# CASE 20
+# Practical ETL example
+# Count successful pipelines and collect failures
+# =========================================================
+
+print("\nCASE 20 -> Practical ETL example")
 
 events = [
-    {"pipeline": "sales_etl", "status": "SUCCESS"},
-    {"pipeline": "inventory_etl", "status": "FAILED"},
-    {"pipeline": "security_etl", "status": "SUCCESS"}
+    {
+        "pipeline": "sales_etl",
+        "status": "SUCCESS"
+    },
+    {
+        "pipeline": "inventory_etl",
+        "status": "FAILED"
+    },
+    {
+        "pipeline": "customer_etl",
+        "status": "SUCCESS"
+    },
+    {
+        "pipeline": "payment_etl",
+        "status": "FAILED"
+    }
 ]
 
 success_count = 0
 failed_pipelines = []
 
 for event in events:
+
     if event["status"] == "SUCCESS":
         success_count += 1
-    else:
-        failed_pipelines.append(event["pipeline"])
 
-print("Successful pipelines:", success_count)
+    else:
+        failed_pipelines.append(
+            event["pipeline"]
+        )
+
+print("Success count:", success_count)
 print("Failed pipelines:", failed_pipelines)
+
+
+# =========================================================
+# CASE 21
+# Practical ETL example
+# enumerate() + dictionary records
+# =========================================================
+
+print("\nCASE 21 -> enumerate() with ETL records")
+
+pipeline_events = [
+    {
+        "pipeline": "sales_etl",
+        "status": "SUCCESS"
+    },
+    {
+        "pipeline": "inventory_etl",
+        "status": "FAILED"
+    },
+    {
+        "pipeline": "customer_etl",
+        "status": "RUNNING"
+    }
+]
+
+for index,event in enumerate(pipeline_events,start=1):
+    print(
+        f"{index}."
+        f"{event['pipeline']} -> "
+        f"{event['status']}"
+    )
+
+
+
+
+
+
+
+# =========================================================
+# CASE 22
+# Practical ETL example
+# zip() for related datasets
+# =========================================================
+
+print("\nCASE 22 -> zip() with ETL data")
+
+pipeline_names = [
+    "sales_etl",
+    "inventory_etl",
+    "customer_etl"
+]
+
+pipeline_statuses = [
+    "SUCCESS",
+    "FAILED",
+    "RUNNING"
+]
+
+for pipeline_name, status in zip(pipeline_names,pipeline_statuses):
+    print(f"{pipeline_name} -> {status}")
+
 
 # =========================================================
 # Expected learning
 # =========================================================
 #
-# for loops iterate over any iterable.
-# range() generates numeric sequences.
-# enumerate() provides indexes.
-# Dictionary iteration uses items().
-# Loops commonly process lists of dictionaries.
-# Conditions inside loops filter records.
-# Accumulators collect transformed data.
-# Nested loops process combinations of data.
+# for loops iterate over iterables.
+#
+# Common iterables:
+# list
+# tuple
+# string
+# dictionary
+# set
+# range()
+#
+# Dictionary iteration:
+# for key in dictionary
+# for value in dictionary.values()
+# for key, value in dictionary.items()
+#
+# range() creates a sequence of integers.
+#
+# enumerate() provides:
+# index + value
+#
+# zip() combines multiple iterables by position.
+#
+# Unpacking assigns multiple values directly to variables.
+#
+# Common loop patterns:
+# counting
+# summation
+# searching
+# filtering
+# building result lists
+#
+# Nested loops can result in O(n²) complexity.
+#
+# for loops are fundamental for Python data processing
+# and ETL workloads.
 # =========================================================

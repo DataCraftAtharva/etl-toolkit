@@ -459,7 +459,7 @@ SELECT
     product_name,
     category,
     price
-FROM public.products
+FROM products
 WHERE product_name NOT LIKE '%Phone%';
 
 
@@ -475,7 +475,8 @@ SELECT
     o.order_id,
     o.customer_id,
     o.order_date,
-    o.order_amount
+    o.order_amount,
+    c.customer_name 
 FROM public.orders AS o
 JOIN public.customers AS c
     ON o.customer_id = c.customer_id

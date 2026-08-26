@@ -638,6 +638,7 @@ def practice_example(numbers):
 
         "Nested loop = automatically O(n²)"
     """
+    #numbers = [10, 20, 30, 40, 50]
 
     count = 0
 

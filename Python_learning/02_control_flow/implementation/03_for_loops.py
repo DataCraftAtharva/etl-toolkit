@@ -556,6 +556,116 @@ for pipeline_name, status in zip(pipeline_names,pipeline_statuses):
     print(f"{pipeline_name} -> {status}")
 
 
+# ============================================================
+# LIST CONCATENATION vs ZIP vs INDEX-BASED PAIRING
+# ============================================================
+
+# 1. LIST CONCATENATION
+# Use + when you want to combine two lists into one list.
+
+list1 = [1, 2, 3]
+list2 = [4, 5, 6]
+
+result = list1 + list2
+
+print(result)
+# [1, 2, 3, 4, 5, 6]
+
+
+# 2. LIST CONCATENATION USING extend()
+# extend() modifies the original list.
+
+list1 = [1, 2, 3]
+list2 = [4, 5, 6]
+
+list1.extend(list2)
+
+print(list1)
+# [1, 2, 3, 4, 5, 6]
+
+
+# Difference:
+#
+# +       → creates a new list
+# extend  → modifies the existing list
+
+
+# ============================================================
+# 3. ZIP() — PAIR CORRESPONDING ELEMENTS
+# ============================================================
+
+pipeline_names = [
+    "sales_etl",
+    "inventory_etl",
+    "customer_etl"
+]
+
+pipeline_statuses = [
+    "SUCCESS",
+    "FAILED",
+    "RUNNING"
+]
+
+for pipeline_name, status in zip(
+    pipeline_names,
+    pipeline_statuses
+):
+    print(f"{pipeline_name} -> {status}")
+
+# Output:
+# sales_etl -> SUCCESS
+# inventory_etl -> FAILED
+# customer_etl -> RUNNING
+
+
+# zip() pairs elements by position:
+#
+# pipeline_names[0]    ↔ pipeline_statuses[0]
+# pipeline_names[1]    ↔ pipeline_statuses[1]
+# pipeline_names[2]    ↔ pipeline_statuses[2]
+
+
+# ============================================================
+# 4. PAIRING WITHOUT zip()
+# ============================================================
+
+# We can manually use indexes:
+
+for index in range(len(pipeline_names)):
+    print(
+        f"{pipeline_names[index]} -> "
+        f"{pipeline_statuses[index]}"
+    )
+
+# Output:
+# sales_etl -> SUCCESS
+# inventory_etl -> FAILED
+# customer_etl -> RUNNING
+
+
+# ============================================================
+# QUICK MEMORY
+# ============================================================
+
+# +
+# → Combine lists
+# [1, 2] + [3, 4] → [1, 2, 3, 4]
+#
+# extend()
+# → Add one list to another existing list
+#
+# zip()
+# → Pair corresponding elements
+# [1, 2] + ["A", "B"]
+# → (1, "A"), (2, "B")
+#
+# range(len(...))
+# → Useful when you need indexes explicitly
+#
+# For corresponding elements:
+# Prefer zip() because it is cleaner and easier to read.
+
+
 # =========================================================
 # Expected learning
 # =========================================================

@@ -212,3 +212,132 @@ match event:
 # Nested structures can be matched elegantly.
 # match-case is useful for event processing and dispatching.
 # =========================================================
+
+
+# =========================================================
+# PRACTICE PROBLEMS
+# =========================================================
+
+# Problem 1
+# Given:
+# job = ("FAILED", 2)
+#
+# Use match-case to print:
+# "Retry job"
+# when retry_count < 3.
+job = ("FAILED", 2)
+match job:
+    case("SUCCESS",_):
+        print("Pipeline Created Successfully")
+    case("FAILED",retry) if retry <3:
+        print("Retry Pipeline")
+    case("FAILED",retry) if retry > 3:
+        print("Pipeline Retry Exhausted and pipeline failed")
+    case _:
+        print("Unknown Status")
+
+
+
+
+# Problem 2
+# Given:
+# response = {
+#     "status": 200,
+#     "data": "success"
+# }
+#
+# Handle:
+# 200 -> Success
+# 404 -> Not Found
+# 500 -> Server Error
+# anything else -> Unknown
+response = {
+   "status": 200,
+  "data": "success"
+}
+match response:
+    case{"status":200,"data":"success"}:
+        print("Success")
+    case {"status": 404}:
+        print("Not Found")
+    case {"status": 500}:
+        print("Server Error")
+    case _:
+        print("Unknown")
+
+# Problem 3
+# Given:
+# event = {
+#     "type": "ORDER_CREATED",
+#     "order_id": 101
+# }
+#
+# Extract order_id and print:
+# "Process order 101"
+
+event = {
+    "type": "ORDER_CREATED",
+    "order_id": 101}
+
+match event:
+    case{"type":"ORDER_CREATED","order_id":order_id}:
+        print(f"Order Created for order_id {order_id}")
+    case _:
+        print("Unknown Order")
+
+
+# Problem 4
+# Given:
+# event = {
+#     "type": "PIPELINE",
+#     "details": {
+#         "status": "FAILED",
+#         "retry_count": 2
+#     }
+# }
+#
+# Print "Retry pipeline" when retry_count < 3.
+event = {
+    "type": "PIPELINE",
+    "details": {
+        "status": "FAILED",
+        "retry_count": 2
+    }}
+match event:
+    case{"type":"PIPELINE","details":{
+        "status": "FAILED",
+        "retry_count": retry
+    }}if retry <3:
+        print(f"Pipeline Retried for  {retry} times")
+    case {"type": "PIPELINE", "details": {
+        "status": "SUCCESS",
+    }}:
+        print(f" Pipeline created Successfully")
+    case _:
+        print("Unknown Order")
+
+# Problem 5
+# Given:
+# records = [
+#     "server-101",
+#     "server-102",
+#     "server-103"
+# ]
+#
+# Capture:
+# first_server
+# remaining_servers
+#
+# using sequence pattern matching.
+
+records = [
+    "server-101",
+    "server-102",
+    "server-103"
+]
+
+
+match records:
+    case [first_server, *remaining_servers]:
+        print(f"First server: {first_server}")
+        print(f"Remaining servers: {remaining_servers}")
